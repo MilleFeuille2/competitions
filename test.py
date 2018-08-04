@@ -139,11 +139,9 @@ def get_result_dt(dt):
         result_row[n] = j  # 項目nに子を登録
 
         # 親と子を1深くする
-        n += 1
-        i = j
-        j = left[i]  # 左の子を取得
+        i, j, n = one_depth(i, j, n, left)
 
-    # 結果テーブルに登録
+    # 結果格納用変数を作成する
     result = result_row
 
     ''' 2レコード目以降 '''
@@ -156,9 +154,7 @@ def get_result_dt(dt):
         result_row[n] = j  # 項目nにjを登録
 
         # 親と子を1深くする
-        n += 1
-        i = j
-        j = left[i]  # 左の子を取得
+        i, j, n = one_depth(i, j, n, left)
 
         # j（左の子）が存在する場合
         while j != -1:
@@ -166,17 +162,21 @@ def get_result_dt(dt):
             result_row[n] = j  # 項目nに子を登録
 
             # 親と子を1深くする
-            n += 1
-            i = j
-            j = left[i]  # 左の子を取得
+            i, j, n = one_depth(i, j, n, left)
 
-        # 結果テーブルに登録
+        # 結果用変数に登録する
         result_row[n:] = np.full(len(result_row[n:]), -1)  # 以降の項目を-1に更新
         result = np.append(result, result_row)
 
+    # 結果用変数を二次元にする
     result = result.reshape(-1, dt.max_depth+1)
 
     return result
+
+
+def one_depth(i, j, n, left):
+    # 親と（左の）子を1深くし、nをインクリメントする
+    return j, left[j], n + 1
 
 
 if __name__ == '__main__':
