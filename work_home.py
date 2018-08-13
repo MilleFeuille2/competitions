@@ -17,21 +17,6 @@ num = 100000
 def main():
     print(datetime.today())
 
-    # df_result = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_result_drop_columns.csv', index_col=0)
-    df_result = pd.read_csv(r'./df_result_drop_columns.csv', index_col=0)
-    # print(df.shape)
-    # # 値がすべて0の列を削除したときのデータ量の減少を見てみたい
-    # drop_columns = []
-    # for column in df.columns:
-    #     print(column)
-    #     if df[column].sum() == 0:
-    #         drop_columns.append(column)
-    # df = df.drop(drop_columns, axis=1)
-    # df.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_result_drop_columns.csv')
-    print(df_result.shape)
-
-    # exit()
-
     """ 今回請求IDと過去請求IDごとの査定データをコード化データ付きで取得する """
     sql_get_satei = get_satei()
     df_satei = pd.read_sql(sql=sql_get_satei, con=conn, index_col=None)
@@ -55,14 +40,14 @@ def main():
     list_ope = make_list_ope(df_cer_now, df_cer_bef)
 
     # 査定データの加工処理
-    df_res_satei_now = process_satei(df_satei, 'a')
-    df_res_satei_bef = process_satei(df_satei, 'b')
+    df_res_satei_now = process_satei(df_satei, list_byo)
+    df_res_satei_bef = process_satei(df_satei, list_byo)
 
     # 診断書データの加工処理
     df_cer_byo_code_now, df_cer_ope_code_now, df_cer_other_now, ids_now =\
-        process_certificate(df_cer_now, 'a')
+        process_certificate(df_cer_now, list_byo, list_ope, 'a')
     df_cer_byo_code_bef, df_cer_ope_code_bef, df_cer_other_bef, ids_bef =\
-        process_certificate(df_cer_bef, 'b')
+        process_certificate(df_cer_bef, list_byo, list_ope, 'b')
 
     df_res_satei.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\df_satei.csv')
     df_res_now.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_res_now.csv')
@@ -358,13 +343,34 @@ def process_satei(df, list_byo):
     df_res = df[['a_id', 'b_id']]
 
     # 今回請求と過去請求のコードを比較して変数を作成する
-
+    # 今回主傷病と過去主傷病
+    # 今回主傷病と過去原因傷病
+    # 今回主傷病と過去合併症
+    # 今回主傷病と過去既往症
+    # 今回原因傷病と過去主傷病
+    # 今回原因傷病と過去原因傷病
+    # 今回原因傷病と過去合併症
+    # 今回原因傷病と過去既往症
+    # 今回合併症と過去主傷病
+    # 今回合併症と過去原因傷病
+    # 今回合併症と過去合併症
+    # 今回合併症と過去既往症
+    # 今回既往症と過去主傷病
+    # 今回既往症と過去原因傷病
+    # 今回既往症と過去合併症
+    # 今回既往症と過去既往症
 
     # 今回請求のダミー変数を作成する
     df_dummy_now = process_satei_dummy(df, list_byo, 'now')
 
     # 過去請求のダミー変数を作成する
     df_dummy_bef = process_satei_dummy(df, list_byo, 'bef')
+    
+    # 主傷病を中分類化してダミー変数化
+    # 主傷病の中分類が同じかフラグ
+    # がん区分や生活習慣病区分が同じかフラグ
+
+    # 結合する
 
     return df_res
 
@@ -628,9 +634,9 @@ def drop_all0_columns(df):
 
 if __name__ == "__main__":
 
-    # # DB接続情報
-    # conn = psycopg2.connect('dbname=daido_db host=localhost user=postgres password=postgres')
-    # cur = conn.cursor()
+    # DB接続情報
+    conn = psycopg2.connect('dbname=daido_db host=localhost user=postgres password=postgres')
+    cur = conn.cursor()
 
     # main()
 
