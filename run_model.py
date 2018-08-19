@@ -146,9 +146,6 @@ def main():
     print('説明変数と目的変数のサイズチェック', x_train.shape, y_train.shape, x_test.shape, y_test.shape)
     clf = RandomForestClassifier(random_state=0, n_estimators=1000, min_samples_leaf=1)
 
-    param_range
-
-
     clf.fit(x_train, y_train)
     # joblib.dump(clf, r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\rf_part_variables.csv')
     print('再学習モデル構築＆保存完了')
@@ -214,6 +211,7 @@ def main():
 
         # 学習データの最終ノードの到達数
         row_last_node = []
+        row_last_node.append(class_names[np.argmax(dt.tree_.value[last_node[i]])])
         row_last_node.append((path_train == last_node[i]).astype(int).sum())
         # 学習データの最終ノードにおけるクラス別到達数
         row_last_node.append(((path_train == last_node[i]) & (pred_train == 0)).astype(int).sum())
@@ -233,7 +231,8 @@ def main():
 
     df_result.index = ['条件{0}'.format(i) for i in range(1, df_result_jp.shape[0] + 1)]
     columns1 = ['項目{0}_条件_gini_到達数_クラス別到達数_予測クラス'.format(i) for i in range(1, df_result_jp.shape[1] + 1)]
-    columns2 = ['train_samples', 'train_samples_non_tol', 'train_samples_tol',
+    columns2 = ['pred_class',
+                'train_samples', 'train_samples_non_tol', 'train_samples_tol',
                 'test_samples', 'test_samples_non_tol', 'test_samples_tol']
     df_result.columns = columns1  + columns2
 
