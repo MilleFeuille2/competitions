@@ -14,6 +14,7 @@ from sklearn import tree
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report
 from sklearn.metrics import precision_recall_curve, auc, roc_curve
+from sklearn.model_selection import validation_curve
 
 
 def main():
@@ -30,12 +31,16 @@ def main():
     # exit()
 
     """ 説明変数と目的変数を読み込む """
-    csv_name = '4_2'  # CSVファイル名を設定
-    input_csv_x = r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\x_{0}.csv'.format(csv_name)
-    input_csv_y = r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\y_{0}.csv'.format(csv_name)
+    csv_name = '1_2'  # CSVファイル名を設定
+    # input_csv_x = r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\x_{0}.csv'.format(csv_name)
+    # input_csv_y = r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\y_{0}.csv'.format(csv_name)
+    input_csv_x = r'./x_{0}.csv'.format(csv_name)
+    input_csv_y = r'./y_{0}.csv'.format(csv_name)
     x = pd.read_csv(input_csv_x, index_col=0)
     y = pd.read_csv(input_csv_y, index_col=0)
     y.columns = ['y']  # TODO 手動でカラム名をyにする必要あり注意
+    columns = x.columns
+    class_names = ['non_tol', 'tol']
     print('csv読み込み完了')
 
     # """ モデルの作成単位に分割する """
@@ -100,7 +105,7 @@ def main():
     # clf = RandomForestClassifier(random_state=0, n_estimators=300)
 
     clf.fit(x_train, y_train)
-    joblib.dump(clf, r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\rf_all_variables.sav')
+    # joblib.dump(clf, r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\rf_all_variables.sav')
     print('モデル構築＆保存完了')
 
     # 精度を評価する
@@ -141,8 +146,11 @@ def main():
     print('説明変数と目的変数のサイズチェック', x_train.shape, y_train.shape, x_test.shape, y_test.shape)
     clf = RandomForestClassifier(random_state=0, n_estimators=1000, min_samples_leaf=1)
 
+    param_range
+
+
     clf.fit(x_train, y_train)
-    joblib.dump(clf, r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\rf_part_variables.csv')
+    # joblib.dump(clf, r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\rf_part_variables.csv')
     print('再学習モデル構築＆保存完了')
 
     # 精度を評価する
@@ -153,63 +161,89 @@ def main():
 
     print(datetime.today())
     """ 再学習おわり """
-    #
-    # # 決定木
-    # print('\n\n\n決定木')
-    # # dt = DecisionTreeClassifier(random_state=0, max_leaf_nodes=10)
-    # # dt = DecisionTreeClassifier(random_state=0, min_samples_leaf=4)
-    # dt = DecisionTreeClassifier(random_state=0, max_depth=7, min_samples_leaf=3)
-    # # dt = DecisionTreeClassifier(random_state=0)
-    #
-    # dt.fit(x_train, y_train)
-    # joblib.dump(dt, r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\dt_variables.csv')
-    # print('決定木モデル構築＆保存完了')
-    #
-    # # 精度を評価する
-    # evaluate_model(dt, x_train, y_train, x_test, y_test, 'dt')
-    #
-    # # 可視化してPDF出力
-    # output_tree(dt, x_test)
 
+    # 決定木
+    print('\n\n\n決定木')
+    # dt = DecisionTreeClassifier(random_state=0, max_leaf_nodes=10)
+    # dt = DecisionTreeClassifier(random_state=0, min_samples_leaf=4)
+    dt = DecisionTreeClassifier(random_state=0, max_depth=7, min_samples_leaf=4)
+    # dt = DecisionTreeClassifier(random_state=0)
 
-    """
-    分岐条件や閾値を出力する
-    参考URL
-    https://own-search-and-study.xyz/2016/12/25/scikit-learn%E3%81%A7%E5%AD%A6%E7%BF%92%E3%81%97%E3%81%9F%E6%B1%BA%E5%AE%9A%E6%9C%A8%E6%A7%8B%E9%80%A0%E3%81%AE%E5%8F%96%E5%BE%97%E6%96%B9%E6%B3%95%E3%81%BE%E3%81%A8%E3%82%81/
-    """
+    dt.fit(x_train, y_train)
+    joblib.dump(dt, r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\dt_variables.csv')
+    print('決定木モデル構築＆保存完了')
 
-    # # 分岐条件の変数名（IDと名称の対応は学習データの順番？）
-    # # -2は分岐条件がない（リーフである）ことを示す
+    # 精度を評価する
+    evaluate_model(dt, x_train, y_train, x_test, y_test, 'dt')
+
+    # 可視化してPDF出力
+    output_tree(dt, x_test, class_names)
+
+    # 分岐条件の変数名（IDと名称の対応は学習データの順番？）
+    # -2は分岐条件がない（リーフである）ことを示す
     # print('分岐条件の変数名')
-    # print(dt.tree_.feature)
-    # # 分岐条件の閾値（scikit-learnでは不等号は常に≦で扱われる＆Trueが左下に進む）
-    # # -2は分岐条件がない（リーフである）ことを示す
-    # print('分岐条件の閾値')
-    # print(dt.tree_.threshold)
-    # # 到達データの偏り度（指標は学習時に指定されたginiやinfoGain）
-    # print('到達データの偏り度')
-    # print(dt.tree_.impurity)
-    # # 到達データ総数
-    # print('到達データ総数')
-    # print(dt.tree_.n_node_samples)
-    # # クラス別到達データ数
-    # print('クラス別到達データ数')
-    # print(dt.tree_.value)
-    # # 各ノードの親子関係（leftは左側の子ノード、rightは右側の子ノードID）※0スタート
-    # print('各ノードの親子関係')
-    # print(dt.tree_.children_left)
-    # print(dt.tree_.children_right)
-    #
-    # result = get_result_dt(dt)
-    #
-    # print('決定木をテーブルにまとめる')
-    # print(result)
-    # print(result.shape)
+    branch_name = [select_columns[i] if i != -2 else '' for i in dt.tree_.feature]
+    branch_name_jp = convert_jp(branch_name)
 
-    # path_train = dt.apply(x_train)
-    # path_test = dt.apply(x_test)
-    # path_train = pd.DataFrame(path_train)
-    # path_test = pd.DataFrame(path_test)
+    # 学習データと評価データの到達ノードを取得する
+    path_train = dt.apply(x_train)
+    path_test = dt.apply(x_test)
+    # 各サンプルの予測クラスを取得する
+    pred_train = dt.predict(x_train)
+    pred_test = dt.predict(x_test)
+
+    # 分岐条件を二次元で取得する
+    result, result_yn, last_node = get_result_dt(dt)
+
+    print(result)
+    print(last_node)
+
+    result_jp = []
+    result_last_node = []
+
+    for i in range(result.shape[0]):
+        row = [(['{0} の値が {1}以上である'.format(branch_name_jp[j], dt.tree_.threshold[j]) ,
+                result_yn[i, k]],
+                round(dt.tree_.impurity[j], 3),
+                dt.tree_.n_node_samples[j],
+                dt.tree_.value[j],
+                class_names[np.argmax(dt.tree_.value[j])])
+               if dt.tree_.threshold[j] != -2.0 else []
+               for j, k in zip(result[i, :].astype(int), range(result_yn.shape[1]))]
+        result_jp.append(row)
+
+        # 学習データの最終ノードの到達数
+        row_last_node = []
+        row_last_node.append((path_train == last_node[i]).astype(int).sum())
+        # 学習データの最終ノードにおけるクラス別到達数
+        row_last_node.append(((path_train == last_node[i]) & (pred_train == 0)).astype(int).sum())
+        row_last_node.append(((path_train == last_node[i]) & (pred_train == 1)).astype(int).sum())
+        # 評価データの最終ノードに到達した数
+        row_last_node.append((path_test == last_node[i]).astype(int).sum())
+        # 評価データの最終ノードにおけるクラス別到達数
+        row_last_node.append(((path_test == last_node[i]) & (pred_test == 0)).astype(int).sum())
+        row_last_node.append(((path_test == last_node[i]) & (pred_test == 1)).astype(int).sum())
+
+        result_last_node.append(row_last_node)
+
+    df_result_jp = pd.DataFrame(result_jp)
+    df_result_last_node = pd.DataFrame(result_last_node)
+
+    df_result = pd.concat([df_result_jp, df_result_last_node], axis=1)
+
+    df_result.index = ['条件{0}'.format(i) for i in range(1, df_result_jp.shape[0] + 1)]
+    columns1 = ['項目{0}_条件_gini_到達数_クラス別到達数_予測クラス'.format(i) for i in range(1, df_result_jp.shape[1] + 1)]
+    columns2 = ['train_samples', 'train_samples_non_tol', 'train_samples_tol',
+                'test_samples', 'test_samples_non_tol', 'test_samples_tol']
+    df_result.columns = columns1  + columns2
+
+    df_result.to_csv(r'./result_dt.csv')
+
+    # TODO HOME last_nodeごとの適合率か再現率を追加する
+
+    print('決定木をテーブルにまとめる')
+
+    decision_path = dt.decision_path(x_train)
     # path_train.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\path_train.csv')
     # path_test.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\path_test.csv')
 
@@ -221,8 +255,8 @@ def evaluate_model(model, x_train, y_train, x_test, y_test, model_name):
     pred_test = model.predict(x_test)
     proba_test = model.predict_proba(x_test)
 
-    pd.DataFrame(proba_train).to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\predict_proba_train_{0}.csv'.format(model_name))
-    pd.DataFrame(proba_test).to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\predict_proba_test_{0}.csv'.format(model_name))
+    # pd.DataFrame(proba_train).to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\predict_proba_train_{0}.csv'.format(model_name))
+    # pd.DataFrame(proba_test).to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\predict_proba_test_{0}.csv'.format(model_name))
 
     print('confusion matrix train 左上：共に非通算、右上：実際非通算 予測通算、左下：実際通算 予測非通算、右下：共に通算')
     print(confusion_matrix(y_train, pred_train))
@@ -268,7 +302,8 @@ def evaluate_model(model, x_train, y_train, x_test, y_test, model_name):
     ax2.set_title('Receiver operating characteristic example')
     ax2.legend(loc='lower left')
 
-    plt.savefig(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\AUCandROC_{0}.png'.format(model_name))
+    # plt.savefig(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\AUCandROC_{0}.png'.format(model_name))
+    plt.savefig(r'./AUCandROC_{0}.png'.format(model_name))
 
     return None
 
@@ -293,17 +328,18 @@ def output_importances(x, clf, select_num):
     return select_columns
 
 
-def output_tree(dt, x):
+def output_tree(dt, x, class_names):
     dot_data = tree.export_graphviz(dt,  # 決定木オブジェクトを一つ指定する
                                     out_file=None,  # ファイルは介さずにGraphvizにdot言語データを渡すのでNone
                                     filled=True,  # Trueにすると、分岐の際にどちらのノードに多く分類されたのか色で示してくれる
                                     rounded=True,  # Trueにすると、ノードの角を丸く描画する。
                                     feature_names=x.columns,  # これを指定しないとチャート上で特徴量の名前が表示されない
-                                    class_names=['non_tol', 'tol'],  # これを指定しないとチャート上で分類名が表示されない
+                                    class_names=class_names,  # これを指定しないとチャート上で分類名が表示されない
                                     special_characters=True  # 特殊文字を扱えるようにする
                                     )
     graph = pydotplus.graphviz.graph_from_dot_data(dot_data)
-    graph.write_png(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\tree.png')
+    # graph.write_png(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\to_group_new\tree.png')
+    graph.write_png(r'./tree.png')
 
 
 def get_result_dt(dt):
@@ -311,6 +347,10 @@ def get_result_dt(dt):
     right = dt.tree_.children_right
     get_left = []
     result_row = np.full(dt.max_depth + 1, -1)
+    result_row_yn = np.full(dt.max_depth + 1, '   ')
+    result = []  # どのノードとどのノードが結合しているかテーブルに格納用
+    result_yn = []  # 各ノードのYESNO格納用
+    last_node = []  # 各条件の最終ノード格納用
 
     i, j = 0, 0  # 親、子供
 
@@ -325,12 +365,15 @@ def get_result_dt(dt):
 
         get_left.append(i)  # 左側取得リストに親を登録
         result_row[n] = j  # 項目nに子を登録
+        result_row_yn[n-1] = 'no'
 
         # 親と子を1深くする
         i, j, n = one_depth(i, j, n, left)
 
     # 結果格納用変数を作成する
-    result = result_row
+    result = np.append(result, result_row)
+    result_yn = np.append(result_yn, result_row_yn)
+    last_node.append(i)
 
     ''' 2レコード目以降 '''
     # 左側取得リストの中身がある場合
@@ -340,6 +383,7 @@ def get_result_dt(dt):
         n = int(np.where(result_row == i)[0]) + 1  # 親の深さ+1を取得
         j = right[i]  # 右の子を取得
         result_row[n] = j  # 項目nにjを登録
+        result_row_yn[n-1] = 'yes'
 
         # 親と子を1深くする
         i, j, n = one_depth(i, j, n, left)
@@ -348,18 +392,23 @@ def get_result_dt(dt):
         while j != -1:
             get_left.append(i)  # 左側取得リストに親を登録
             result_row[n] = j  # 項目nに子を登録
+            result_row_yn[n-1] = 'no'
 
             # 親と子を1深くする
             i, j, n = one_depth(i, j, n, left)
 
         # 結果用変数に登録する
         result_row[n:] = np.full(len(result_row[n:]), -1)  # 以降の項目を-1に更新
+        result_row_yn[n-1:] = np.full(len(result_row_yn[n-1:]), '')
         result = np.append(result, result_row)
+        result_yn = np.append(result_yn, result_row_yn)
+        last_node.append(i)
 
     # 結果用変数を二次元にする
     result = result.reshape(-1, dt.max_depth+1)
+    result_yn = result_yn.reshape(-1, dt.max_depth+1)
 
-    return result
+    return result, result_yn, last_node
 
 
 def one_depth(i, j, n, left):
@@ -378,6 +427,22 @@ def drop_all0_columns(df):
     df = df.drop(drop_columns, axis=1)
 
     return df
+
+
+def convert_jp(before):
+    dict_jp = {'code_gappei_682_bef_y': '過去の合併症が682',
+               'code_kiou_174_bef': '過去の既往症が174',
+               'code_byo_151_now': '今回の傷病が151',
+               'hosyabui_exist_a': '今回の放射性部位が存在',
+               'code_cause_174_bef': '過去の原因傷病が174',
+               'code_gappei_576_now_x': '今回の合併症が576',
+               'code_main_194_now': '今回の主傷病が194',
+               'same_akiou_bkiou': '今回と過去の既往症が同じ',
+               'a_kiou_exist': '今回の既往症が存在',
+               }
+    after = [dict_jp[i] if i != '' else '' for i in before]
+
+    return after
 
 
 if __name__ == "__main__":
