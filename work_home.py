@@ -38,12 +38,12 @@ def main():
     list_ope.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\list_ope.csv')
     list_byo_chu.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\list_byo_chu.csv')
 
-    # # 査定データの加工処理
-    # df_res_satei = process_satei(df_satei, list_byo, list_byo_chu)
-    #
-    # print(datetime.today(), '査定データの加工完了')
-    # df_res_satei.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\df_res_satei.csv')
-    df_res_satei = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\df_res_satei.csv', index_col=0)
+    # 査定データの加工処理
+    df_res_satei = process_satei(df_satei, list_byo, list_byo_chu)
+
+    print(datetime.today(), '査定データの加工完了')
+    df_res_satei.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\df_res_satei.csv')
+    # df_res_satei = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\df_res_satei.csv', index_col=0)
 
     # 診断書データの加工処理
     df_res_cer_now = process_certificate(df_cer_now, list_byo, list_ope, 'a')
@@ -60,66 +60,6 @@ def main():
 
 def get_satei():
     # 査定データとコード化データを、今回請求と過去請求それぞれ結合して取得する
-    # return 'SELECT ' \
-    #        ' tol.*, ' \
-    #        ' main1_now.totalgroup a_main_dis_code1, ' \
-    #        ' main2_now.totalgroup a_main_dis_code2, ' \
-    #        ' cause1_now.totalgroup a_cause_dis_code1, ' \
-    #        ' cause2_now.totalgroup a_cause_dis_code2, ' \
-    #        ' gappei_now.totalgroup a_gappei_code, ' \
-    #        ' kiou1_now.totalgroup a_kiou_code1, ' \
-    #        ' kiou2_now.totalgroup a_kiou_code2, ' \
-    #        ' main1_bef.totalgroup b_main_dis_code1, ' \
-    #        ' main2_bef.totalgroup b_main_dis_code2, ' \
-    #        ' cause1_bef.totalgroup b_cause_dis_code1, ' \
-    #        ' cause2_bef.totalgroup b_cause_dis_code2, ' \
-    #        ' gappei_bef.totalgroup b_gappei_dis_code, ' \
-    #        ' kiou1_bef.totalgroup b_kiou_dis_code1 ' \
-    #        ' kiou2_bef.totalgroup b_kiou_dis_code2 ' \
-    #        ' grp_main1_now.chu_code a_main_dis_grp1,' \
-    #        ' grp_main2_now.chu_code a_main_dis_grp2,' \
-    #        ' grp_main1_bef.chu_code b_main_dis_grp1,' \
-    #        ' grp_main2_bef.chu_code b_main_dis_grp2 ' \
-    #        'FROM daido_total_opportunity as tol' \
-    #        'LEFT JOIN code_main1 as main1_now'\
-    #        'on main1_now.id_ = tol.a_id ' \
-    #        'LEFT JOIN code_main2 as main2_now'\
-    #        'on main2_now.id_ = tol.a_id ' \
-    #        'LEFT JOIN code_cause1 as cause1_now'\
-    #        'on cause1_now.id_ = tol.a_id ' \
-    #        'LEFT JOIN code_cause2 as cause2_now'\
-    #        'on cause2_now.id_ = tol.a_id ' \
-    #        'LEFT JOIN code_gappei as gappei_now'\
-    #        'on gappei_now.id_ = tol.a_id ' \
-    #        'LEFT JOIN code_kiou1 as kiou1_now'\
-    #        'on kiou1_now.id_ = tol.a_id ' \
-    #        'LEFT JOIN code_kiou2 as kiou2_now'\
-    #        'on kiou2_now.id_ = tol.a_id ' \
-    #        'LEFT JOIN code_main1 as main1_bef'\
-    #        'on main1_bef.id_ = tol.b_id ' \
-    #        'LEFT JOIN code_main2 as main2_bef'\
-    #        'on main2_bef.id_ = tol.b_id ' \
-    #        'LEFT JOIN code_cause1 as cause1_bef'\
-    #        'on cause1_bef.id_ = tol.b_id ' \
-    #        'LEFT JOIN code_cause2 as cause2_bef'\
-    #        'on cause2_bef.id_ = tol.b_id ' \
-    #        'LEFT JOIN code_gappei as gappei_bef'\
-    #        'on gappei_bef.id_ = tol.b_id ' \
-    #        'LEFT JOIN code_kiou1 as kiou1_bef'\
-    #        'on kiou1_bef.id_ = tol.b_id ' \
-    #        'LEFT JOIN code_kiou2 as kiou2_bef'\
-    #        'on kiou2_bef.id_ = tol.b_id ' \
-    #        'LEFT JOIN group_icd9 grp_main1_now ' \
-    #        'ON grp_main1_now.sho_code = tol.a_main_dis_code1 ' \
-    #        'LEFT JOIN group_icd9 grp_main2_now ' \
-    #        'ON grp_main2_now.sho_code = tol.a_main_dis_code2 ' \
-    #        'LEFT JOIN group_icd9 grp_main1_bef ' \
-    #        'ON grp_main1_bef.sho_code = tol.b_main_dis_code1 ' \
-    #        'LEFT JOIN group_icd9 grp_main2_bef ' \
-    #        'ON grp_main2_bef.sho_code = tol.b_main_dis_code2 ' \
-    #        'ORDER BY tol.a_id, b_id '
-
-    # 暫定
     return 'SELECT ' \
            ' tol.*, ' \
            ' grp_main1_now.chu_code chu_a_main1,' \
@@ -517,7 +457,7 @@ def process_satei(df, list_byo, list_byo_chu):
                               (df['a_kiou_code2'] != '') & (df['a_kiou_code2'] != '000')) * 1
     # 過去原因傷病の有無
     df_res['b_byogen_exist'] = ((df['b_cause_dis_code1'] != '') & (df['b_cause_dis_code1'] != '000')) * 1
-    # 過去合併症の有無
+    # 過去合併症の有無1
     df_res['b_gappei_exist'] = ((df['b_gappei_code'] != '') & (df['b_gappei_code'] != '000')) * 1
     # 過去既往症の有無
     df_res['b_kiou_exist'] = ((df['b_kiou_code1'] != '') & (df['b_kiou_code1'] != '000') |
@@ -539,13 +479,13 @@ def process_satei_dummy(df, list_byo, when):
     for code in list_byo:
         print('査定データ（傷病）のダミー変数化', when, code)
         # 査定データのダミー変数化
-        df_res['code_main_{0}_{1}'.format(code, when)] = (df['{0}_main_dis_code1'.format(when2)] == code |
-                                                          df['{0}_main_dis_code2'.format(when2)] == code) * 1
-        df_res['code_cause_{0}_{1}'.format(code, when)] = (df['{0}_cause_dis_code1'.format(when2)] == code |
-                                                           df['{0}_cause_dis_code2'.format(when2)] == code) * 1
+        df_res['code_main_{0}_{1}'.format(code, when)] = ((df['{0}_main_dis_code1'.format(when2)] == code) |
+                                                          (df['{0}_main_dis_code2'.format(when2)] == code)) * 1
+        df_res['code_cause_{0}_{1}'.format(code, when)] = ((df['{0}_cause_dis_code1'.format(when2)] == code) |
+                                                           (df['{0}_cause_dis_code2'.format(when2)] == code)) * 1
         df_res['code_gappei_{0}_{1}_sa'.format(code, when)] = (df['{0}_gappei_code'.format(when2)] == code) * 1
-        df_res['code_kiou_{0}_{1}'.format(code, when)] = (df['{0}_kiou_code1'.format(when2)] == code |
-                                                          df['{0}_kiou_code2'.format(when2)] == code) * 1
+        df_res['code_kiou_{0}_{1}'.format(code, when)] = ((df['{0}_kiou_code1'.format(when2)] == code) |
+                                                          (df['{0}_kiou_code2'.format(when2)] == code)) * 1
 
     df_res = drop_all0_columns(df_res)
     return df_res
@@ -558,13 +498,13 @@ def process_satei_dummy_chu(df, list_byo_chu, when):
     for code in list_byo_chu:
         print('査定データ（傷病中分類）ダミー変数化', when, code)
         # 査定データのダミー変数化
-        df_res['chu_main_{0}_{1}'.format(code, when)] = (df['chu_{0}_main1'.format(when2)] == code |
-                                                         df['chu_{0}_main2'.format(when2)] == code) * 1
-        # df_res['chu_cause_{0}_{1}'.format(code, when)] = (df['chu_{0}_cause1'.format(when2)] == code |
-        #                                                   df['chu_{0}_cause2'.format(when2)] == code) * 1
+        df_res['chu_main_{0}_{1}'.format(code, when)] = ((df['chu_{0}_main1'.format(when2)] == code) |
+                                                         (df['chu_{0}_main2'.format(when2)] == code)) * 1
+        # df_res['chu_cause_{0}_{1}'.format(code, when)] = ((df['chu_{0}_cause1'.format(when2)] == code) |
+        #                                                   (df['chu_{0}_cause2'.format(when2)] == code)) * 1
         # df_res['chu_gappei_{0}_{1}'.format(code, when)] = (df['chu_{0}_gappei'.format(when2)] == code) * 1
-        # df_res['chu_kiou_{0}_{1}'.format(code, when)] = (df['chu_{0}_kiou1'.format(when2)] == code |
-        #                                                  df['chu_{0}_kiou2'.format(when2)] == code) * 1
+        # df_res['chu_kiou_{0}_{1}'.format(code, when)] = ((df['chu_{0}_kiou1'.format(when2)] == code) |
+        #                                                  (df['chu_{0}_kiou2'.format(when2)] == code)) * 1
 
     df_res = drop_all0_columns(df_res)
     return df_res
@@ -575,23 +515,23 @@ def process_certificate(df, list_byo, list_ope, when):
     # 日付で判断して無効な値は'000'などにする（手術名など）
     # できれば列単位で処理したい
     
-    # # id_no単位でダミー変数化する
-    # df_dummy_byo, df_dummy_ope = process_certificate_dummy(df, list_byo, list_ope, when)
-    #
-    # print(datetime.today(), 'id_no単位のダミー変数化完了。id単位に加工する', when)
-    # df_dummy_byo.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_byo_{0}.csv'.format(when))
-    # df_dummy_ope.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_ope_{0}.csv'.format(when))
-    #
-    # # ダミー変数化したものをid単位にする
-    # df_dummy_byo = process_certificate_dummy_groupid(df_dummy_byo)
-    # print(datetime.today(), 'id単位のダミー変数化完了（傷病）', when)
-    # df_dummy_byo.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_byo_gid_{0}.csv'.format(when))
-    # df_dummy_ope = process_certificate_dummy_groupid(df_dummy_ope)
-    # print(datetime.today(), 'id単位のダミー変数化完了（手術）', when)
-    # df_dummy_ope.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_ope_gid_{0}.csv'.format(when))
+    # id_no単位でダミー変数化する
+    df_dummy_byo, df_dummy_ope = process_certificate_dummy(df, list_byo, list_ope, when)
 
-    df_dummy_byo = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_byo_gid_{0}.csv'.format(when), index_col=0)
-    df_dummy_ope = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_ope_gid_{0}.csv'.format(when), index_col=0)
+    print(datetime.today(), 'id_no単位のダミー変数化完了。id単位に加工する', when)
+    df_dummy_byo.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_byo_{0}.csv'.format(when))
+    df_dummy_ope.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_ope_{0}.csv'.format(when))
+
+    # ダミー変数化したものをid単位にする
+    df_dummy_byo = process_certificate_dummy_groupid(df_dummy_byo)
+    print(datetime.today(), 'id単位のダミー変数化完了（傷病）', when)
+    df_dummy_byo.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_byo_gid_{0}.csv'.format(when))
+    df_dummy_ope = process_certificate_dummy_groupid(df_dummy_ope)
+    print(datetime.today(), 'id単位のダミー変数化完了（手術）', when)
+    df_dummy_ope.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_ope_gid_{0}.csv'.format(when))
+
+    # df_dummy_byo = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_byo_gid_{0}.csv'.format(when), index_col=0)
+    # df_dummy_ope = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_ope_gid_{0}.csv'.format(when), index_col=0)
 
     # 結合する
     df_dummy = pd.concat([df_dummy_byo, df_dummy_ope], axis=1)
@@ -666,7 +606,7 @@ def process_certificate(df, list_byo, list_ope, when):
 
     print('診断書データの加工完了', when)
     df_res.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_res_{0}.csv'.format(when))
-    df_res = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_res_{0}.csv'.format(when), index_col=0)
+    # df_res = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_res_{0}.csv'.format(when), index_col=0)
 
     return df_res
 
@@ -694,17 +634,17 @@ def process_certificate_dummy(df, list_byo, list_ope, when):
     # 診断書データ（傷病）のダミー変数化
     for code in list_byo:
         print('診断書データ（傷病）のダミー変数化', code)
-        df_res_byo['code_byo_{0}_{1}'.format(code, when2)] = (df['code_byo1'] == code |
-                                                              df['code_byo2'] == code |
-                                                              df['code_byo3'] == code |
-                                                              df['code_byo4'] == code |
-                                                              df['code_byo5'] == code) * 1
-        df_res_byo['code_byogen_{0}_{1}'.format(code, when2)] = (df['code_byogen1'] == code |
-                                                                 df['code_byogen2'] == code |
-                                                                 df['code_byogen3'] == code) * 1
-        df_res_byo['code_gappei_{0}_{1}'.format(code, when2)] = (df['code_gappei1'] == code |
-                                                                 df['code_gappei2'] == code |
-                                                                 df['code_gappei3'] == code) * 1
+        df_res_byo['code_byo_{0}_{1}'.format(code, when2)] = ((df['code_byo1'] == code) |
+                                                              (df['code_byo2'] == code) |
+                                                              (df['code_byo3'] == code) |
+                                                              (df['code_byo4'] == code) |
+                                                              (df['code_byo5'] == code)) * 1
+        df_res_byo['code_byogen_{0}_{1}'.format(code, when2)] = ((df['code_byogen1'] == code) |
+                                                                 (df['code_byogen2'] == code) |
+                                                                 (df['code_byogen3'] == code)) * 1
+        df_res_byo['code_gappei_{0}_{1}'.format(code, when2)] = ((df['code_gappei1'] == code) |
+                                                                 (df['code_gappei2'] == code) |
+                                                                 (df['code_gappei3'] == code)) * 1
         df_res_byo['code_hosya_{0}_{1}'.format(code, when2)] = (df['code_hosya'] == code) * 1
         df_res_byo['code_byori_{0}_{1}'.format(code, when2)] = (df['code_byori'] == code) * 1
         df_res_byo['code_hokabyori_{0}_{1}'.format(code, when2)] = (df['code_hokabyori'] == code) * 1
@@ -715,11 +655,11 @@ def process_certificate_dummy(df, list_byo, list_ope, when):
         df_res_ope['code_gappei_ope_{0}_{1}'.format(code, when2)] = (df['code_gappei_ope'] == code) * 1
         for i in range(1, 6):
             df_tmp['code_ope{0}_{1}'.format(i, code)] = df['code_ope{0}'.format(i)] == code
-        df_res_ope['code_ope_{0}_{1}'.format(code, when2)] = (df['code_ope1'] == code |
-                                                              df['code_ope2'] == code |
-                                                              df['code_ope3'] == code |
-                                                              df['code_ope4'] == code |
-                                                              df['code_ope5'] == code) * 1
+        df_res_ope['code_ope_{0}_{1}'.format(code, when2)] = ((df['code_ope1'] == code) |
+                                                              (df['code_ope2'] == code) |
+                                                              (df['code_ope3'] == code) |
+                                                              (df['code_ope4'] == code) |
+                                                              (df['code_ope5'] == code)) * 1
     df_res_byo = drop_all0_columns(df_res_byo)
     df_res_ope = drop_all0_columns(df_res_ope)
 
@@ -762,16 +702,16 @@ def process_ope_kubun(df, when):
     df_tmp2 = df[['id_']]
 
     for i in range(1, 16):
-        df_tmp['ope_shu{0}_{1}'.format(i, when)] = (df['uiaa0601_1'] == i |
-                                                    df['uiaa0601_2'] == i |
-                                                    df['uiaa0601_3'] == i |
-                                                    df['uiaa0601_4'] == i |
-                                                    df['uiaa0601_5'] == i |
-                                                    df['uiaa0601_12'] == i |
-                                                    df['uiaa0601_22'] == i |
-                                                    df['uiaa0601_32'] == i |
-                                                    df['uiaa0601_42'] == i |
-                                                    df['uiaa0601_52'] == i) * 1
+        df_tmp['ope_shu{0}_{1}'.format(i, when)] = ((df['uiaa0601_1'] == i) |
+                                                    (df['uiaa0601_2'] == i) |
+                                                    (df['uiaa0601_3'] == i) |
+                                                    (df['uiaa0601_4'] == i) |
+                                                    (df['uiaa0601_5'] == i) |
+                                                    (df['uiaa0601_12'] == i) |
+                                                    (df['uiaa0601_22'] == i) |
+                                                    (df['uiaa0601_32'] == i) |
+                                                    (df['uiaa0601_42'] == i) |
+                                                    (df['uiaa0601_52'] == i)) * 1
 
     df_tmp_groupbyid_max = df_tmp.groupby('id_').max().sort_index()
 
@@ -793,32 +733,32 @@ def drop_all0_columns(df):
 
 if __name__ == "__main__":
 
-    # print(datetime.today(), 'START')
-    #
-    # # DB接続情報
-    # conn = psycopg2.connect('dbname=daido_db host=localhost user=postgres password=postgres')
-    # cur = conn.cursor()
-    #
-    # main()
-    #
-    # cur.close()
-    #
-    # print(datetime.today(), 'END')
-    #
+    print(datetime.today(), 'START')
+
+    # DB接続情報
+    conn = psycopg2.connect('dbname=daido_db host=localhost user=postgres password=postgres')
+    cur = conn.cursor()
+
+    main()
+
+    cur.close()
+
+    print(datetime.today(), 'END')
+
     # a = pd.Series([1, 2, 3, None])
     # print(a.isnull())
     # print(a.notna())
-
-    a = True
-    b = False
-    df_test = pd.DataFrame(index=[1,2,3])
-    df_test['column1'] = [a, a, b]
-    df_test['column2'] = [a, b, b]
-
-    print(df_test)
-    print(df_test['column1'] * 1)
-    print(df_test['column2'] * 1)
-    print((df_test['column1'] & df_test['column2']) * 1)
-    print((df_test['column1'] | df_test['column2']) * 1)
+    #
+    # a = True
+    # b = False
+    # df_test = pd.DataFrame(index=[1,2,3])
+    # df_test['column1'] = [a, a, b]
+    # df_test['column2'] = [a, b, b]
+    #
+    # print(df_test)
+    # print(df_test['column1'] * 1)
+    # print(df_test['column2'] * 1)
+    # print((df_test['column1'] & df_test['column2']) * 1)
+    # print((df_test['column1'] | df_test['column2']) * 1)
 
 
