@@ -70,7 +70,7 @@ def main():
                              index_col=0)
     print('過去と今回の診断書の比較によるデータ加工 完了')
 
-    # 過去の退院日から今回の入院日までの、入院の有無・手術の有無
+    # 過去退院から今回入院までの入院・手術の有無、過去入院・退院から今回までの期間
     df_between = between_certificate(df_satei[['a_id', 'b_id',
                                                'a_hsplzn_dt', 'a_leaving_dt', 'b_hsplzn_dt', 'b_leaving_dt']],
                                      df_cer_now, df_cer_bef)
@@ -764,31 +764,31 @@ def cycle_now_bef(df_same_cer, df_cer_now_, df_cer_bef_):
                 if row_cer_now_[3] != '99999999' and row_cer_now_[3] == row_cer_bef_[3]:
                     hokagankakudate = 1
                 # 放射性部位
-                if row_cer_now_[4] != '000' and row_cer_now_[4] != '' and row_cer_now_[4] is not None and \
+                if row_cer_now_[4] != '000' and check_nullorblank(row_cer_now_[4]) and \
                    row_cer_now_[4] == row_cer_bef_[4]:
                     hosya = 1
                 # 病理組織診断名
-                if row_cer_now_[5] != '000' and row_cer_now_[5] != '' and row_cer_now_[5] is not None and \
+                if row_cer_now_[5] != '000' and check_nullorblank(row_cer_now_[5]) and \
                    row_cer_now_[5] == row_cer_bef_[5]:
                     byori = 1
                 # 他の検査による診断名
-                if row_cer_now_[6] != '000' and row_cer_now_[6] != '' and row_cer_now_[6] is not None and \
+                if row_cer_now_[6] != '000' and check_nullorblank(row_cer_now_[6]) and \
                    row_cer_now_[6] == row_cer_bef_[6]:
                     hokabyori = 1
                 # 手術名１～５
-                if row_cer_now_[7] != 'ZZZZ' and row_cer_now_[7] != '' and row_cer_now_[7] is not None and \
+                if row_cer_now_[7] != 'ZZZZ' and check_nullorblank(row_cer_now_[7]) and \
                    row_cer_now_[7] in row_cer_bef_[7:].values:
                     ope = 1
-                if row_cer_now_[8] != 'ZZZZ' and row_cer_now_[8] != '' and row_cer_now_[8] is not None and \
+                if row_cer_now_[8] != 'ZZZZ' and check_nullorblank(row_cer_now_[8]) and \
                    row_cer_now_[8] in row_cer_bef_[7:].values:
                     ope = 1
-                if row_cer_now_[9] != 'ZZZZ' and row_cer_now_[9] != '' and row_cer_now_[9] is not None and \
+                if row_cer_now_[9] != 'ZZZZ' and check_nullorblank(row_cer_now_[9]) and \
                    row_cer_now_[9] in row_cer_bef_[7:].values:
                     ope = 1
-                if row_cer_now_[10] != 'ZZZZ' and row_cer_now_[10] != '' and row_cer_now_[10] is not None and \
+                if row_cer_now_[10] != 'ZZZZ' and check_nullorblank(row_cer_now_[10]) and \
                    row_cer_now_[10] in row_cer_bef_[7:].values:
                     ope = 1
-                if row_cer_now_[11] != 'ZZZZ' and row_cer_now_[11] != '' and row_cer_now_[11] is not None and \
+                if row_cer_now_[11] != 'ZZZZ' and check_nullorblank(row_cer_now_[11]) and \
                    row_cer_now_[11] in row_cer_bef_[7:].values:
                     ope = 1
 
@@ -902,6 +902,12 @@ def between_certificate(df_satei, df_cer_now, df_cer_bef):
     df_result.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_compare\df_between.csv')
 
     return df_result
+
+
+def check_nullorblank(x):
+    # ブランクまたはNoneでないかチェックする
+    result = (x != '') and (x is not None)
+    return result
 
 
 if __name__ == "__main__":
