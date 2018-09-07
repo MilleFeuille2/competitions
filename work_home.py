@@ -23,25 +23,25 @@ def main():
     df_cer_bef = pd.read_sql(sql=sql_get_certificate_bef, con=conn, index_col=None)
 
     print(datetime.today())
-    # df_satei.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\sql\df_satei.csv')
-    # df_cer_now.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\sql\df_cer_now.csv')
-    # df_cer_bef.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\sql\df_cer_bef.csv')
+    df_satei.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\sql\df_satei.csv')
+    df_cer_now.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\sql\df_cer_now.csv')
+    df_cer_bef.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\sql\df_cer_bef.csv')
 
     # """ 傷病コードリストと手術コードリストと中分類コードリストを作成する """
     list_byo = make_list_byo(df_satei, df_cer_now, df_cer_bef)
     list_ope = make_list_ope(df_cer_now, df_cer_bef)
     list_byo_chu = make_list_byo_chu(df_satei)
-    #
-    # # list_byo.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\list_byo.csv')
-    # # list_ope.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\list_ope.csv')
-    # # list_byo_chu.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\list_byo_chu.csv')
-    # #
-    # # 査定データの加工処理
-    # df_res_satei = process_satei(df_satei, list_byo, list_byo_chu)
-    #
-    # print(datetime.today(), '査定データの加工完了')
-    # df_res_satei.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\df_res_satei.csv')
-    df_res_satei = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\df_res_satei.csv', index_col=0)
+
+    list_byo.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\list_byo.csv')
+    list_ope.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\list_ope.csv')
+    list_byo_chu.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\list_byo_chu.csv')
+
+    # 査定データの加工処理
+    df_res_satei = process_satei(df_satei, list_byo, list_byo_chu)
+
+    print(datetime.today(), '査定データの加工完了')
+    df_res_satei.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\df_res_satei.csv')
+    # df_res_satei = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_satei\df_res_satei.csv', index_col=0)
 
     # 診断書データの加工処理
     df_res_cer_now = process_certificate(df_cer_now, list_byo, list_ope, 'a')
@@ -52,20 +52,20 @@ def main():
     df_res = pd.merge(df_res, df_res_cer_bef, left_on='b_id', right_on='id_', how='left')
     df_res = df_res.fillna(0)
 
-    # # """ 過去と今回の診断書の比較によるデータ加工 """
-    # # print('過去と今回の診断書の比較によるデータ加工 開始')
-    # # # 過去と今回で別の診断書が紐づく場合に、診断書項目が同じかどうか確認して項目を作成する
-    # # df_same_cer = pd.read_sql(sql='select * from same_certificate', con=conn, index_col=None)
-    # # df_same_cer.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\sql\df_same_cer.csv')
-    # #
-    # # df_compare = compare_certificate(df_same_cer,
-    # #                                  df_cer_now[['id_', 'byo_date', 'syosin_date', 'gankaku_date', 'hokagankaku_date',
-    # #                                              'code_hosya', 'code_byori', 'code_hokabyori', 'id_no',
-    # #                                              'code_ope1', 'code_ope2', 'code_ope3', 'code_ope4', 'code_ope5']],
-    # #                                  df_cer_bef[['id_', 'byo_date', 'syosin_date', 'gankaku_date', 'hokagankaku_date',
-    # #                                              'code_hosya', 'code_byori', 'code_hokabyori', 'id_no',
-    # #                                              'code_ope1', 'code_ope2', 'code_ope3', 'code_ope4', 'code_ope5']],
-    # #                                  df_satei[['a_id', 'b_id']])
+    # """ 過去と今回の診断書の比較によるデータ加工 """
+    print('過去と今回の診断書の比較によるデータ加工 開始')
+    # 過去と今回で別の診断書が紐づく場合に、診断書項目が同じかどうか確認して項目を作成する
+    df_same_cer = pd.read_sql(sql='select * from same_certificate', con=conn, index_col=None)
+    df_same_cer.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\sql\df_same_cer.csv')
+
+    df_compare = compare_certificate(df_same_cer,
+                                     df_cer_now[['id_', 'byo_date', 'syosin_date', 'gankaku_date', 'hokagankaku_date',
+                                                 'code_hosya', 'code_byori', 'code_hokabyori', 'id_no',
+                                                 'code_ope1', 'code_ope2', 'code_ope3', 'code_ope4', 'code_ope5']],
+                                     df_cer_bef[['id_', 'byo_date', 'syosin_date', 'gankaku_date', 'hokagankaku_date',
+                                                 'code_hosya', 'code_byori', 'code_hokabyori', 'id_no',
+                                                 'code_ope1', 'code_ope2', 'code_ope3', 'code_ope4', 'code_ope5']],
+                                     df_satei[['a_id', 'b_id']])
     df_compare = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_compare\df_compare.csv',
                              index_col=0)
     print('過去と今回の診断書の比較によるデータ加工 完了')
@@ -84,6 +84,11 @@ def main():
     print('結合')
     df_res = pd.concat([df_res, df_compare.drop(columns=['a_id', 'b_id'])], axis=1)
     df_res = pd.concat([df_res, df_between.drop(columns=['a_id', 'b_id'])], axis=1)
+
+    # 類似の項目を統合する（既往症存在有無）
+    df_res['a_kiou_exist'] = ((df_res['a_kiou_exist']) | (df_res['kiouumu_a'])) * 1
+    df_res['b_kiou_exist'] = ((df_res['b_kiou_exist']) | (df_res['kiouumu_b'])) * 1
+    df_res = df_res.drop(columns=['kiouumu_a', 'kiouumu_b'])
 
     print('データ加工すべて完了')
     df_res.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_all\df_res.csv', index=False)
@@ -463,96 +468,96 @@ def process_satei_dummy_chu(df, list_byo_chu, when):
 
 def process_certificate(df, list_byo, list_ope, when):
     
-    # # # id_no単位でダミー変数化する
-    # # df_dummy_byo, df_dummy_ope = process_certificate_dummy(df, list_byo, list_ope, when)
-    # # df_dummy_byo.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_byo_{0}.csv'.format(when))
-    # # df_dummy_ope.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_ope_{0}.csv'.format(when))
-    # # print(datetime.today(), 'id_no単位のダミー変数化完了。id単位に加工する', when)
-    # #
-    # # # ダミー変数化したものをid単位にする
-    # # df_dummy_byo = df_dummy_byo.groupby('id_').max().sort_index()
-    # # df_dummy_ope = df_dummy_ope.groupby('id_').max().sort_index()
-    # # df_dummy_byo.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_byo_gid_{0}.csv'.format(when))
-    # # df_dummy_ope.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_ope_gid_{0}.csv'.format(when))
-    # # print(datetime.today(), 'id単位のダミー変数化完了（傷病・手術）', when)
-    # #
+    # id_no単位でダミー変数化する
+    df_dummy_byo, df_dummy_ope = process_certificate_dummy(df, list_byo, list_ope, when)
+    df_dummy_byo.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_byo_{0}.csv'.format(when))
+    df_dummy_ope.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_ope_{0}.csv'.format(when))
+    print(datetime.today(), 'id_no単位のダミー変数化完了。id単位に加工する', when)
+
+    # ダミー変数化したものをid単位にする
+    df_dummy_byo = df_dummy_byo.groupby('id_').max().sort_index()
+    df_dummy_ope = df_dummy_ope.groupby('id_').max().sort_index()
+    df_dummy_byo.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_byo_gid_{0}.csv'.format(when))
+    df_dummy_ope.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_ope_gid_{0}.csv'.format(when))
+    print(datetime.today(), 'id単位のダミー変数化完了（傷病・手術）', when)
+
     # df_dummy_byo = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_byo_gid_{0}.csv'.format(when), index_col=0)
     # df_dummy_ope = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_ope_gid_{0}.csv'.format(when), index_col=0)
-    #
-    # # 結合する
-    # df_dummy = pd.concat([df_dummy_byo, df_dummy_ope], axis=1)
-    # print('診断書データのダミー変数化完了', when)
-    # # df_dummy.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_{0}.csv'.format(when))
-    #
-    # """ 傷病・手術コードのダミー変数以外の変数を作成する """
-    # df_other = pd.DataFrame(None, index=df['id_'].drop_duplicates().sort_values())
-    #
-    # df_groupbyid = df[['id_', 'no_', 'zenumu', 'kiouumu', 'uiac0209', 'code_hosya',
-    #                    'code_ope1', 'code_ope2', 'code_ope3', 'code_ope4', 'code_ope5',
-    #                    'code_byori', 'code_hokabyori']].groupby('id_')
-    # df_groupbyid_max = df_groupbyid.max().sort_index()
-    #
-    # # 前医有無
-    # df_other['zenumu_{0}'.format(when)] = df_groupbyid_max['zenumu']
-    #
-    # # 既往症有無
-    # df_other['kiouumu_{0}'.format(when)] = df_groupbyid_max['kiouumu']
-    #
-    # # 手術種類
-    # df_other = pd.concat([df_other, process_ope_kubun(df, when)], axis=1)
-    #
-    # # 悪性新生物既往区分
-    # df_other['gankiouumu_{0}'.format(when)] = df_groupbyid_max['uiac0209']
-    #
-    # # 今回治療悪性新生物
-    # df_tmp = df[['id_']]
-    # df_tmp['gan_kubun1_{0}'.format(when)] = (df['konkaiakusei'] == '1') * 1
-    # df_tmp['gan_kubun2_{0}'.format(when)] = (df['konkaiakusei'] == '2') * 1
-    # df_tmp['gan_kubun3_{0}'.format(when)] = (df['konkaiakusei'] == '3') * 1
-    # df_tmp['gan_kubun4_{0}'.format(when)] = (df['konkaiakusei'] == '4') * 1
-    # df_tmp_groupbyid_max = df_tmp.groupby('id_').max().sort_index()
-    # df_other = pd.concat([df_other, df_tmp_groupbyid_max], axis=1)
-    #
-    # # TMN分類
-    # df_tmp = df[['id_']]
-    # df_tmp['byorit_{0}'.format(when)] = df['byorit'].apply(convert_byorit)
-    # df_tmp['byorin_{0}'.format(when)] = df['byorin'].apply(convert_byorin)
-    # df_tmp['byorim_{0}'.format(when)] = df['byorim'].apply(convert_byorim)
-    # df_tmp_groupbyid_max = df_tmp.groupby('id_').max().sort_index()
-    # df_other = pd.concat([df_other, df_tmp_groupbyid_max], axis=1)
-    #
-    # df_tmp = df[['id_']]
-    # # 手術の有無（手術１～５がコード化されているかいないか）
-    # df_tmp['ope_exist_{0}'.format(when)] = ((df['code_ope1'] != '000') & (df['code_ope1'] != '') & (df['code_ope1'].notna()) |
-    #                                         (df['code_ope2'] != '000') & (df['code_ope2'] != '') & (df['code_ope2'].notna()) |
-    #                                         (df['code_ope3'] != '000') & (df['code_ope3'] != '') & (df['code_ope3'].notna()) |
-    #                                         (df['code_ope4'] != '000') & (df['code_ope4'] != '') & (df['code_ope4'].notna()) |
-    #                                         (df['code_ope5'] != '000') & (df['code_ope5'] != '') & (df['code_ope5'].notna())) * 1
-    # # 放射性部位の有無（コード化されているかいないか）
-    # df_tmp['hosyabui_exist_{0}'.format(when)] = ((df['code_hosya'] != '000') & (df['code_hosya'] != '') & (df['code_hosya'].notna())) * 1
-    # # がんの有無（病理組織診断名と他の検査による診断名がどちらもコード化されていないもの）
-    # df_tmp['gan_exist_{0}'.format(when)] = ((df['code_byori'] != '000') & (df['code_byori'] != '') & (df['code_byori'].notna()) |
-    #                                         (df['code_hokabyori'] != '000') & (df['code_hokabyori'] != '') & (df['code_hokabyori'].notna())) * 1
-    # df_tmp_groupbyid_max = df_tmp.groupby('id_').max().sort_index()
-    # df_other = pd.concat([df_other, df_tmp_groupbyid_max], axis=1)
-    # df_other = df_other.fillna(0)
-    #
-    # # 紐づく診断書の枚数
-    # df_tmp = df[['id_']]
-    # df_tmp['count_cer_{0}'.format(when)] = (df['no_'].notna()).astype(int)
-    # df_tmp_groupbyid_max = df_tmp.groupby('id_').sum().sort_index()
-    # df_other = pd.concat([df_other, df_tmp_groupbyid_max], axis=1)
-    # df_other = drop_all0_columns(df_other)
-    #
-    # print('診断書データの他の変数の加工完了', when)
-    # df_other.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_other_{0}.csv'.format(when))
-    #
-    # # ダミー変数と他の変数を結合する
-    # df_res = pd.concat([df_dummy, df_other], axis=1)
-    #
-    # print('診断書データの加工完了', when)
-    # df_res.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_res_{0}.csv'.format(when))
-    df_res = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_res_{0}.csv'.format(when), index_col=0)
+
+    # 結合する
+    df_dummy = pd.concat([df_dummy_byo, df_dummy_ope], axis=1)
+    print('診断書データのダミー変数化完了', when)
+    df_dummy.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_dummy_{0}.csv'.format(when))
+
+    """ 傷病・手術コードのダミー変数以外の変数を作成する """
+    df_other = pd.DataFrame(None, index=df['id_'].drop_duplicates().sort_values())
+
+    df_groupbyid = df[['id_', 'no_', 'zenumu', 'kiouumu', 'uiac0209', 'code_hosya',
+                       'code_ope1', 'code_ope2', 'code_ope3', 'code_ope4', 'code_ope5',
+                       'code_byori', 'code_hokabyori']].groupby('id_')
+    df_groupbyid_max = df_groupbyid.max().sort_index()
+
+    # 前医有無
+    df_other['zenumu_{0}'.format(when)] = df_groupbyid_max['zenumu']
+
+    # 既往症有無
+    df_other['kiouumu_{0}'.format(when)] = df_groupbyid_max['kiouumu']
+
+    # 手術種類
+    df_other = pd.concat([df_other, process_ope_kubun(df, when)], axis=1)
+
+    # 悪性新生物既往区分
+    df_other['gankiouumu_{0}'.format(when)] = df_groupbyid_max['uiac0209']
+
+    # 今回治療悪性新生物
+    df_tmp = df[['id_']]
+    df_tmp['gan_kubun1_{0}'.format(when)] = (df['konkaiakusei'] == '1') * 1
+    df_tmp['gan_kubun2_{0}'.format(when)] = (df['konkaiakusei'] == '2') * 1
+    df_tmp['gan_kubun3_{0}'.format(when)] = (df['konkaiakusei'] == '3') * 1
+    df_tmp['gan_kubun4_{0}'.format(when)] = (df['konkaiakusei'] == '4') * 1
+    df_tmp_groupbyid_max = df_tmp.groupby('id_').max().sort_index()
+    df_other = pd.concat([df_other, df_tmp_groupbyid_max], axis=1)
+
+    # TMN分類
+    df_tmp = df[['id_']]
+    df_tmp['byorit_{0}'.format(when)] = df['byorit'].apply(convert_byorit)
+    df_tmp['byorin_{0}'.format(when)] = df['byorin'].apply(convert_byorin)
+    df_tmp['byorim_{0}'.format(when)] = df['byorim'].apply(convert_byorim)
+    df_tmp_groupbyid_max = df_tmp.groupby('id_').max().sort_index()
+    df_other = pd.concat([df_other, df_tmp_groupbyid_max], axis=1)
+
+    df_tmp = df[['id_']]
+    # 手術の有無（手術１～５がコード化されているかいないか）
+    df_tmp['ope_exist_{0}'.format(when)] = ((df['code_ope1'] != '000') & (df['code_ope1'] != '') & (df['code_ope1'].notna()) |
+                                            (df['code_ope2'] != '000') & (df['code_ope2'] != '') & (df['code_ope2'].notna()) |
+                                            (df['code_ope3'] != '000') & (df['code_ope3'] != '') & (df['code_ope3'].notna()) |
+                                            (df['code_ope4'] != '000') & (df['code_ope4'] != '') & (df['code_ope4'].notna()) |
+                                            (df['code_ope5'] != '000') & (df['code_ope5'] != '') & (df['code_ope5'].notna())) * 1
+    # 放射性部位の有無（コード化されているかいないか）
+    df_tmp['hosyabui_exist_{0}'.format(when)] = ((df['code_hosya'] != '000') & (df['code_hosya'] != '') & (df['code_hosya'].notna())) * 1
+    # がんの有無（病理組織診断名と他の検査による診断名がどちらもコード化されていないもの）
+    df_tmp['gan_exist_{0}'.format(when)] = ((df['code_byori'] != '000') & (df['code_byori'] != '') & (df['code_byori'].notna()) |
+                                            (df['code_hokabyori'] != '000') & (df['code_hokabyori'] != '') & (df['code_hokabyori'].notna())) * 1
+    df_tmp_groupbyid_max = df_tmp.groupby('id_').max().sort_index()
+    df_other = pd.concat([df_other, df_tmp_groupbyid_max], axis=1)
+    df_other = df_other.fillna(0)
+
+    # 紐づく診断書の枚数
+    df_tmp = df[['id_']]
+    df_tmp['count_cer_{0}'.format(when)] = (df['no_'].notna()).astype(int)
+    df_tmp_groupbyid_max = df_tmp.groupby('id_').sum().sort_index()
+    df_other = pd.concat([df_other, df_tmp_groupbyid_max], axis=1)
+    df_other = drop_all0_columns(df_other)
+
+    print('診断書データの他の変数の加工完了', when)
+    df_other.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_other_{0}.csv'.format(when))
+
+    # ダミー変数と他の変数を結合する
+    df_res = pd.concat([df_dummy, df_other], axis=1)
+
+    print('診断書データの加工完了', when)
+    df_res.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_res_{0}.csv'.format(when))
+    # df_res = pd.read_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_certificate\df_res_{0}.csv'.format(when), index_col=0)
 
     return df_res
 
@@ -708,7 +713,7 @@ def compare_certificate(df_same_cer, df_cer_now, df_cer_bef, df_satei):
     # 査定データ分くりかえす
     for index in range(len(df_satei)):
 
-        print(index)
+        print(index, len(df_satei))
         a_id, b_id = df_satei.loc[index, 'a_id'], df_satei.loc[index, 'b_id']
 
         df_cer_now_ = (df_cer_now[df_cer_now['id_'] == a_id]).drop_duplicates().reset_index(drop=True)
@@ -805,7 +810,7 @@ def between_certificate(df_satei, df_cer_now, df_cer_bef):
         df_cer_now[column] = df_cer_now[column].apply(convert_date)
 
     for index in range(len(df_satei)):
-        print(index)
+        print('between_certificate', index, len(df_satei))
 
         b_nyu = df_satei.loc[index, 'b_hsplzn_dt']
         b_tai = df_satei.loc[index, 'b_leaving_dt']
@@ -874,7 +879,6 @@ def between_certificate(df_satei, df_cer_now, df_cer_bef):
                                 nyuinumu_from_btai, opeumu_from_btai],
                                index=['a_id', 'b_id', 'nyuinumu_from_btai', 'opeumu_from_btai'])
 
-        result.append(result_row)
         # 今回請求の診断書加工の場合、過去請求の入院日・退院日との期間を計算する
         # 傷病発生日、初診日、病理組織診断確定日、他の検査による診断確定日との期間（値があるもので最長と最短）
         for column in ['byo_date', 'syosin_date', 'gankaku_date', 'hokagankaku_date']:
@@ -897,6 +901,7 @@ def between_certificate(df_satei, df_cer_now, df_cer_bef):
                                                                  '{0}_from_bnyu_min'.format(column),
                                                                  '{0}_from_btai_max'.format(column),
                                                                  '{0}_from_btai_min'.format(column)])])
+        result.append(result_row)
 
     df_result = pd.DataFrame(result)
     df_result.to_csv(r'C:\Users\tie303957\PycharmProjects\Ai_suggest\output\processing_compare\df_between.csv')
